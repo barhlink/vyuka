@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Tutorial</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafafa;--fg:#111;--mid:#555;--muted:#999;--light:#e5e5e5;--lighter:#f4f4f4;
+  --green:#15803d;--green-bg:#f0fdf4;--green-b:#bbf7d0;
+  --red:#dc2626;--red-bg:#fef2f2;--red-b:#fecaca;
+  --blue:#1d4ed8;--blue-bg:#eff6ff;--blue-b:#bfdbfe;
+  --amber:#b45309;--amber-bg:#fffbeb;--amber-b:#fde68a;
+  --code-bg:#f7f7f7;
+  --kw:#7c3aed;--str:#16a34a;--num:#ea580c;--fn:#1d4ed8;--cm:#9ca3af;
+}
+html{font-size:16px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--fg);min-height:100vh}
+
+.shell{max-width:660px;margin:0 auto;padding:0 24px 80px}
+
+/* top bar */
+.topbar{
+  padding:26px 0 18px;margin-bottom:36px;
+  border-bottom:1px solid var(--light);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.brand{font-family:'DM Serif Display',serif;font-size:1.05rem;letter-spacing:-0.3px}
+.brand small{font-family:'DM Sans',sans-serif;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-top:2px}
+.top-right{display:flex;align-items:center;gap:16px}
+.xp-badge{font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--muted);letter-spacing:0.5px}
+.xp-badge span{color:var(--fg);font-weight:500}
+.timer{font-family:'DM Mono',monospace;font-size:0.82rem;color:var(--muted)}
+
+/* progress */
+.prog-wrap{margin-bottom:40px}
+.prog-meta{display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.72rem;color:var(--muted);font-weight:500;letter-spacing:0.5px}
+.prog-track{height:2px;background:var(--light)}
+.prog-fill{height:100%;background:var(--fg);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.chapter-pips{display:flex;gap:4px;margin-top:8px}
+.pip{flex:1;height:3px;background:var(--light);border-radius:2px;transition:background .4s}
+.pip.done{background:var(--fg)}
+.pip.active{background:var(--mid)}
+
+/* main content */
+#main{animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* title screen */
+.title-screen{padding:20px 0 10px}
+.title-eyebrow{font-size:0.68rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:20px}
+.title-h{font-family:'DM Serif Display',serif;font-size:2.8rem;letter-spacing:-1.5px;line-height:1.05;margin-bottom:14px}
+.title-h em{font-style:italic;color:var(--mid)}
+.title-sub{font-size:0.95rem;color:var(--mid);line-height:1.65;max-width:420px;margin-bottom:36px}
+.chapter-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:40px}
+.ch-chip{padding:10px 14px;border:1px solid var(--light);border-radius:5px;font-size:0.78rem;color:var(--mid);display:flex;align-items:center;gap:8px;cursor:pointer;transition:border-color .15s,background .15s}
+.ch-chip:hover{border-color:#aaa;background:var(--lighter)}
+.ch-chip .ch-icon{font-size:1rem}
+.ch-chip .ch-name{font-weight:500;color:var(--fg)}
+.go-btn{padding:13px 40px;background:var(--fg);color:white;border:none;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;cursor:pointer;transition:opacity .2s;letter-spacing:0.3px}
+.go-btn:hover{opacity:.8}
+
+/* chapter intro */
+.ch-intro{padding:16px 0}
+.ch-num{font-size:0.68rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:16px}
+.ch-title-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ch-icon-big{font-size:2rem}
+.ch-title{font-family:'DM Serif Display',serif;font-size:2.2rem;letter-spacing:-1px}
+.ch-tagline{font-size:0.95rem;color:var(--mid);margin-bottom:28px;line-height:1.6;max-width:400px}
+.start-btn{padding:12px 36px;background:var(--fg);color:white;border:none;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:500;cursor:pointer;transition:opacity .2s;letter-spacing:0.3px}
+.start-btn:hover{opacity:.8}
+
+/* theory card */
+.theory-card{margin-bottom:0}
+.theory-eyebrow{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:16px}
+.theory-heading{font-family:'DM Serif Display',serif;font-size:1.6rem;letter-spacing:-0.5px;margin-bottom:10px;line-height:1.2}
+.theory-text{font-size:0.93rem;color:var(--mid);line-height:1.7;margin-bottom:24px}
+
+/* code example block */
+.code-ex{background:var(--code-bg);border:1px solid var(--light);border-radius:6px;padding:18px 20px;margin-bottom:16px;font-family:'DM Mono',monospace;font-size:0.83rem;line-height:2;position:relative;overflow-x:auto}
+.code-ex .cl{display:block;white-space:pre}
+
+/* annotations */
+.annots{display:flex;flex-direction:column;gap:7px;margin-bottom:28px}
+.annot{display:flex;gap:10px;align-items:baseline;font-size:0.82rem}
+.annot-key{font-family:'DM Mono',monospace;font-size:0.78rem;background:var(--lighter);padding:2px 8px;border-radius:3px;white-space:nowrap;flex-shrink:0;color:var(--fg)}
+.annot-val{color:var(--mid);line-height:1.5}
+
+.next-theory-btn{padding:12px 36px;background:var(--fg);color:white;border:none;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:500;cursor:pointer;transition:opacity .2s;letter-spacing:0.3px}
+.next-theory-btn:hover{opacity:.8}
+
+/* exercise */
+.ex-rule{height:1px;background:var(--light);margin:32px 0}
+.ex-label{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between}
+.ex-instruction{font-family:'DM Serif Display',serif;font-size:1.4rem;letter-spacing:-0.3px;margin-bottom:22px;line-height:1.3}
+
+/* code fill block */
+.fill-block{background:var(--code-bg);border:1px solid var(--light);border-radius:6px;padding:18px 20px;margin-bottom:22px;font-family:'DM Mono',monospace;font-size:0.83rem;line-height:2.2;position:relative;overflow-x:auto}
+.fill-block .cl{display:block;white-space:pre-wrap}
+.fill-block.correct{border-color:var(--green);background:var(--green-bg)}
+.fill-block.wrong{border-color:var(--red);background:var(--red-bg);animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* the input blank */
+.blank{
+  display:inline-block;
+  font-family:'DM Mono',monospace;font-size:0.83rem;
+  border:none;border-bottom:2px solid var(--blue);
+  background:#e8f0fe;color:var(--fg);
+  padding:1px 6px;border-radius:3px 3px 0 0;
+  outline:none;min-width:48px;
+  transition:background .15s,border-color .15s;
+  vertical-align:baseline;
+}
+.blank:focus{background:#d1e4ff;border-color:#1a56db}
+.blank.ok{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.blank.err{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+
+/* submit row */
+.submit-row{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.check-btn{padding:10px 28px;background:var(--fg);color:white;border:none;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:0.87rem;font-weight:500;cursor:pointer;transition:opacity .2s;letter-spacing:0.3px}
+.check-btn:hover{opacity:.8}
+.check-btn:disabled{opacity:.35;cursor:default}
+.hint-btn{background:none;border:1px solid var(--light);border-radius:5px;padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:border-color .15s,color .15s}
+.hint-btn:hover{border-color:#aaa;color:var(--fg)}
+.attempts-txt{font-size:0.75rem;color:var(--muted);font-family:'DM Mono',monospace}
+
+/* feedback */
+.fb{display:none;border-radius:5px;padding:13px 16px;font-size:0.87rem;line-height:1.6;margin-bottom:20px;animation:fbIn .3s ease}
+@keyframes fbIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fb.show{display:flex;gap:11px;align-items:flex-start}
+.fb.ok{background:var(--green-bg);border:1px solid var(--green-b);color:#166534}
+.fb.hint{background:var(--amber-bg);border:1px solid var(--amber-b);color:#92400e}
+.fb.look{background:var(--blue-bg);border:1px solid var(--blue-b);color:#1e40af}
+.fb.reveal{background:var(--lighter);border:1px solid var(--light);color:var(--mid)}
+.fb-icon{flex-shrink:0;margin-top:1px;font-size:0.85rem}
+.fb-body strong{display:block;margin-bottom:2px;font-weight:600;font-size:0.9rem}
+
+.next-ex-btn{display:none;width:100%;padding:13px;background:var(--fg);color:white;border:none;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:500;cursor:pointer;transition:opacity .2s,transform .15s;letter-spacing:0.3px}
+.next-ex-btn.show{display:block}
+.next-ex-btn:hover{opacity:.85;transform:translateY(-1px)}
+
+/* chapter done */
+.ch-done{text-align:center;padding:32px 0}
+.done-icon{font-size:3rem;margin-bottom:20px;animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.done-title{font-family:'DM Serif Display',serif;font-size:2rem;letter-spacing:-0.8px;margin-bottom:10px}
+.done-sub{font-size:0.92rem;color:var(--mid);max-width:340px;margin:0 auto 30px;line-height:1.65}
+.done-stats{display:flex;justify-content:center;gap:24px;margin-bottom:36px}
+.done-stat{text-align:center}
+.done-stat-val{font-family:'DM Serif Display',serif;font-size:1.8rem;letter-spacing:-0.5px}
+.done-stat-lbl{font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px}
+.continue-btn{padding:13px 44px;background:var(--fg);color:white;border:none;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;cursor:pointer;transition:opacity .2s;letter-spacing:0.3px}
+.continue-btn:hover{opacity:.8}
+
+/* win screen */
+.win{padding:24px 0}
+.win-label{font-size:0.68rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:20px}
+.win-title{font-family:'DM Serif Display',serif;font-size:3rem;letter-spacing:-2px;line-height:1;margin-bottom:16px}
+.win-sub{font-size:0.95rem;color:var(--mid);line-height:1.65;max-width:380px;margin-bottom:40px}
+.win-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:40px}
+.win-stat{padding:16px 18px;border:1px solid var(--light);border-radius:5px}
+.win-stat-val{font-family:'DM Serif Display',serif;font-size:1.9rem;letter-spacing:-0.8px;margin-bottom:3px}
+.win-stat-lbl{font-size:0.67rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600}
+.restart-link{background:none;border:none;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
+.restart-link:hover{color:var(--fg)}
+
+/* syntax colors */
+.kw{color:var(--kw)}.str{color:var(--str)}.num{color:var(--num)}.fn{color:var(--fn)}.cm{color:var(--cm);font-style:italic}
+
+@media(max-width:480px){
+  .chapter-list{grid-template-columns:1fr}
+  .title-h{font-size:2.2rem}
+  .win-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="brand">Python Tutorial<small>Syntaxe krok za krokem</small></div>
+    <div class="top-right">
+      <div class="xp-badge">XP <span id="xpVal">0</span></div>
+      <div class="timer" id="timerEl">00:00</div>
+    </div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-meta">
+      <span id="progLabel">—</span>
+      <span id="progPct">0 %</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="chapter-pips" id="pips"></div>
+  </div>
+  <div id="main"></div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+const CHAPTERS = [
+  {
+    icon:'💬', color:'#1d4ed8',
+    title:'print()',
+    tagline:'Základní příkaz pro výpis — bez něj bychom nic neviděli.',
+    theory:{
+      heading:'Jak Python ukáže text?',
+      text:'Příkaz <b>print()</b> zobrazí cokoli, co vložíme do závorek. Text musí být v uvozovkách " " — tak Python pozná, že jde o slova, ne příkazy.',
+      lines:[
+        {t:`<span class='fn'>print</span>(<span class='str'>"Ahoj světe!"</span>)`},
+        {t:`<span class='fn'>print</span>(<span class='str'>"Jak se máš?"</span>)`},
+        {t:`<span class='fn'>print</span>(<span class='num'>42</span>)  <span class='cm'># číslo bez uvozovek</span>`},
+      ],
+      annots:[
+        {k:'print',v:'příkaz pro výpis — přesně toto slovo, nic jiného'},
+        {k:'()',v:'závorky jsou povinné — Python nezná print bez nich'},
+        {k:'"..."',v:'uvozovky ohraničují text — bez nich Python hledá proměnnou'},
+      ]
+    },
+    exercises:[
+      {
+        instruction:'Doplň příkaz, který zobrazí text:',
+        label:'Cvičení 1',
+        lines:[`[[BLANK]]("Dobrý den!")`],
+        blank:'print',
+        hint:'Začíná na p — pět písmen',
+        ok:'print() je klíčové slovo. Závorky jsou součástí příkazu — bez nich Python neví, co vypsat.',
+        no:'Klíčové slovo je print. Pak hned závorky. Zkus to napsat znovu.'
+      },
+      {
+        instruction:'Doplň text tak, aby se zobrazilo slovo <strong>Hurá!</strong>',
+        label:'Cvičení 2',
+        lines:[`print([[BLANK]])`],
+        blank:'"Hurá!"',
+        hint:'Text patří do uvozovek: "Hurá!"',
+        ok:'Text v uvozovkách — Python ví, že jde o slova. Bez uvozovek by hledal proměnnou s tímto jménem.',
+        no:'Text musí být ohraničen uvozovkami: "Hurá!". Uvozovky jsou součástí odpovědi.'
+      }
+    ]
+  },
+  {
+    icon:'📦', color:'#be185d',
+    title:'Proměnné',
+    tagline:'Pojmenované krabičky, do kterých ukládáme hodnoty.',
+    theory:{
+      heading:'Co je proměnná?',
+      text:'Proměnná je jako krabička s názvem. Pomocí znaku <b>=</b> do ní uložíme hodnotu. Vlevo je vždy název, vpravo hodnota. Jméno si vybíráme sami.',
+      lines:[
+        {t:`jméno <span class='kw'>=</span> <span class='str'>"Eva"</span>`},
+        {t:`věk  <span class='kw'>=</span> <span class='num'>12</span>`},
+        {t:`<span class='fn'>print</span>(jméno)  <span class='cm'># Vypíše: Eva</span>`},
+        {t:`<span class='fn'>print</span>(věk)   <span class='cm'># Vypíše: 12</span>`},
+      ],
+      annots:[
+        {k:'=',v:'uložení hodnoty — jedno rovnítko, ne dvě'},
+        {k:'jméno',v:'název proměnné — libovolné slovo bez mezer'},
+        {k:'"Eva"',v:'text v uvozovkách; číslo píšeme bez uvozovek'},
+      ]
+    },
+    exercises:[
+      {
+        instruction:'Doplň operátor pro uložení hodnoty:',
+        label:'Cvičení 1',
+        lines:[`věk [[BLANK]] 10`],
+        blank:'=',
+        hint:'Jedno rovnítko — ne dvě!',
+        ok:'= ukládá hodnotu. == (dvě) porovnává — to jsou různé věci.',
+        no:'Uložení hodnoty = jedno rovnítko. Dvě == by byly porovnání. Zkus znovu.'
+      },
+      {
+        instruction:'Doplň název proměnné pro jméno:',
+        label:'Cvičení 2',
+        lines:[`[[BLANK]] = "Tomáš"`,`print(jméno)`],
+        blank:'jméno',
+        hint:'Na druhém řádku vidíš, jaká proměnná se vypisuje',
+        ok:'Proměnnou pojmenujeme a pak ji používáme všude stejně — velká a malá písmena záleží.',
+        no:'Podívej se na druhý řádek — co je uvnitř print()? Přesně takhle se musí jmenovat proměnná.'
+      },
+      {
+        instruction:'Ulož do proměnné barva hodnotu <strong>modrá</strong>:',
+        label:'Cvičení 3',
+        lines:[`barva = [[BLANK]]`,`print(barva)`],
+        blank:'"modrá"',
+        hint:'Text patří do uvozovek — napiš "modrá" včetně uvozovek',
+        ok:'Textová hodnota v uvozovkách — Python pak ví, že jde o slova, ne název proměnné.',
+        no:'Hodnota musí být v uvozovkách: "modrá". Uvozovky jsou součástí odpovědi.'
+      }
+    ]
+  },
+  {
+    icon:'🔢', color:'#ea580c',
+    title:'Čísla a výpočty',
+    tagline:'Python umí sčítat, odčítat, násobit i dělit.',
+    theory:{
+      heading:'Python jako kalkulačka',
+      text:'Čísla píšeme <b>bez uvozovek</b>. Python zvládá základní matematiku přímo uvnitř print() nebo při uložení do proměnné. Výsledek spočítá sám.',
+      lines:[
+        {t:`<span class='fn'>print</span>(<span class='num'>3</span> <span class='kw'>+</span> <span class='num'>5</span>)   <span class='cm'># Vypíše: 8</span>`},
+        {t:`<span class='fn'>print</span>(<span class='num'>10</span> <span class='kw'>-</span> <span class='num'>4</span>)  <span class='cm'># Vypíše: 6</span>`},
+        {t:`<span class='fn'>print</span>(<span class='num'>3</span> <span class='kw'>*</span> <span class='num'>4</span>)   <span class='cm'># Vypíše: 12</span>`},
+        {t:`<span class='fn'>print</span>(<span class='num'>10</span> <span class='kw'>/</span> <span class='num'>2</span>)  <span class='cm'># Vypíše: 5.0</span>`},
+      ],
+      annots:[
+        {k:'3 + 5',v:'čísla bez uvozovek — Python je sečte'},
+        {k:'"3" + "5"',v:'text v uvozovkách — Python by vypsal "35", ne 8!'},
+        {k:'**',v:'umocnění: 2**3 = 8 (dva na třetí)'},
+      ]
+    },
+    exercises:[
+      {
+        instruction:'Doplň operátor pro součet:',
+        label:'Cvičení 1',
+        lines:[`print(7 [[BLANK]] 3)  # Výsledek: 10`],
+        blank:'+',
+        hint:'Klasické znaménko pro sčítání',
+        ok:'+ sečte dvě čísla. Python vypíše výsledek, ne "7 + 3".',
+        no:'Sčítání se píše znaménkem +. Zkus znovu.'
+      },
+      {
+        instruction:'Doplň operátor pro násobení:',
+        label:'Cvičení 2',
+        lines:[`print(5 [[BLANK]] 4)  # Výsledek: 20`],
+        blank:'*',
+        hint:'V Pythonu se násobení nepíše ×, ale jiným znakem',
+        ok:'* je operátor násobení. × nebo · Python nezná — vždy musíme psát hvězdičku.',
+        no:'Násobení v Pythonu je hvězdička *. Zkus to.'
+      },
+      {
+        instruction:'Doplň výpočet průměru:',
+        label:'Cvičení 3',
+        lines:[`součet = 10 + 20 + 30`,`průměr = součet [[BLANK]] 3`,`print(průměr)`],
+        blank:'/',
+        hint:'Dělení — jeden ze čtyř základních operátorů',
+        ok:'/ je dělení. Výsledek bude 20.0 — Python vrátí desetinné číslo.',
+        no:'Dělení se píše lomítkem /. Zkus znovu.'
+      }
+    ]
+  },
+  {
+    icon:'📝', color:'#6b7280',
+    title:'Komentáře',
+    tagline:'Poznámky v kódu, které Python přeskočí.',
+    theory:{
+      heading:'Co je komentář?',
+      text:'Komentář začíná znakem <b>#</b>. Python přeskočí vše, co je za # na daném řádku — nevykoná to, nevypíše to. Komentáře slouží pro nás — jako poznámky.',
+      lines:[
+        {t:`<span class='cm'># Toto je komentář — Python ho přeskočí</span>`},
+        {t:`<span class='fn'>print</span>(<span class='str'>"Ahoj"</span>)  <span class='cm'># Inline komentář</span>`},
+        {t:`<span class='cm'># Tuto část kódu dočasně vypínám:</span>`},
+        {t:`<span class='cm'># print("Tohle se nevypíše")</span>`},
+      ],
+      annots:[
+        {k:'#',v:'znak mřížky — začíná komentář, Python vše za ním přeskočí'},
+        {k:'za kódem',v:'komentář může být na samostatném řádku nebo za příkazem'},
+        {k:'# kód',v:'komentování kódu — způsob, jak ho dočasně vypnout'},
+      ]
+    },
+    exercises:[
+      {
+        instruction:'Doplň znak, který zahajuje komentář:',
+        label:'Cvičení 1',
+        lines:[`[[BLANK]] Toto je moje první Python program`],
+        blank:'#',
+        hint:'Jeden znak — mřížka na klávesnici',
+        ok:'# říká Pythonu: vše za mnou je komentář, přeskoč to. Žádné závorky ani uvozovky.',
+        no:'Komentář začíná znakem #. Jen ten jeden znak, nic víc.'
+      },
+      {
+        instruction:'Přidej inline komentář za kód:',
+        label:'Cvičení 2',
+        lines:[`print("Ahoj")  [[BLANK]] pozdrav uživateli`],
+        blank:'#',
+        hint:'Komentář může být i za příkazem na stejném řádku',
+        ok:'Komentář za příkazem — Python spustí print("Ahoj"), zbytek přeskočí.',
+        no:'Komentář se zahajuje #. Pak může přijít libovolný text.'
+      }
+    ]
+  },
+  {
+    icon:'⌨️', color:'#0891b2',
+    title:'input()',
+    tagline:'Čtení textu, který napíše uživatel.',
+    theory:{
+      heading:'Jak se zeptat uživatele?',
+      text:'Příkaz <b>input()</b> zastaví program a čeká, dokud uživatel něco nenapíše a nestiskne Enter. Výsledek uložíme do proměnné. Text v závorce je otázka — zobrazí se uživateli.',
+      lines:[
+        {t:`jméno <span class='kw'>=</span> <span class='fn'>input</span>(<span class='str'>"Jak se jmenuješ? "</span>)`},
+        {t:`<span class='fn'>print</span>(<span class='str'>"Ahoj, "</span> <span class='kw'>+</span> jméno)`},
+      ],
+      annots:[
+        {k:'input()',v:'zastaví program, čeká na text od uživatele'},
+        {k:'"Jak se jmenuješ? "',v:'otázka — zobrazí se uživateli jako výzva'},
+        {k:'jméno = input(...)',v:'uložení odpovědi do proměnné pro pozdější použití'},
+      ]
+    },
+    exercises:[
+      {
+        instruction:'Doplň příkaz pro čtení vstupu:',
+        label:'Cvičení 1',
+        lines:[`odpověď = [[BLANK]]("Oblíbená barva? ")`],
+        blank:'input',
+        hint:'Příkaz pro čtení — 5 písmen, začíná na i',
+        ok:'input() vrátí text, který uživatel napsal. Ten pak uložíme do proměnné.',
+        no:'Příkaz je input — přesně tak. Zkus to napsat celé.'
+      },
+      {
+        instruction:'Doplň otázku <strong>Kolik ti je let?</strong> (s mezerou na konci):',
+        label:'Cvičení 2',
+        lines:[`věk = input([[BLANK]])`,`print("Tvůj věk: " + věk)`],
+        blank:'"Kolik ti je let? "',
+        hint:'Text v uvozovkách — napiš "Kolik ti je let? " včetně uvozovek a mezery',
+        ok:'Otázka v uvozovkách se zobrazí uživateli. Mezera na konci oddělí otázku od odpovědi.',
+        no:'Otázka musí být v uvozovkách: "Kolik ti je let? ". Nezapomeň na uvozovky i mezeru na konci.'
+      }
+    ]
+  },
+  {
+    icon:'🔀', color:'#d97706',
+    title:'if podmínka',
+    tagline:'Python se rozhoduje — provede kód jen když podmínka platí.',
+    theory:{
+      heading:'Větvení s if',
+      text:'<b>if</b> zkontroluje podmínku. Pokud platí, provede odsazený kód — posuneme ho 4 mezerami nebo tabelátorem. Dvojtečka na konci řádku s if je povinná.',
+      lines:[
+        {t:`věk <span class='kw'>=</span> <span class='num'>15</span>`},
+        {t:`<span class='kw'>if</span> věk <span class='kw'>>=</span> <span class='num'>6</span>:`},
+        {t:`    <span class='fn'>print</span>(<span class='str'>"Jdeš do školy!"</span>)`},
+        {t:`<span class='kw'>if</span> věk <span class='kw'>==</span> <span class='num'>15</span>:`},
+        {t:`    <span class='fn'>print</span>(<span class='str'>"Přesně patnáct!"</span>)`},
+      ],
+      annots:[
+        {k:'if',v:'klíčové slovo — začíná podmínku'},
+        {k:':',v:'dvojtečka na konci — povinná, jinak Python ohlásí chybu'},
+        {k:'    print(...)',v:'odsazení 4 mezerami říká: toto patří pod if'},
+        {k:'>=, ==, >, <',v:'srovnávací operátory: větší rovno, rovno, větší, menší'},
+      ]
+    },
+    exercises:[
+      {
+        instruction:'Doplň klíčové slovo pro podmínku:',
+        label:'Cvičení 1',
+        lines:[`skóre = 80`,`[[BLANK]] skóre > 50:`,`    print("Úspěch!")`],
+        blank:'if',
+        hint:'Dvě písmena — zahajuje podmínku',
+        ok:'if zahajuje podmínku. Za podmínkou musí být dvojtečka a příkazy uvnitř se odsazují.',
+        no:'Klíčové slovo je if. Právě dvě písmena. Zkus znovu.'
+      },
+      {
+        instruction:'Doplň operátor porovnání (větší nebo rovno):',
+        label:'Cvičení 2',
+        lines:[`věk = 18`,`if věk [[BLANK]] 18:`,`    print("Dospělý")`],
+        blank:'>=',
+        hint:'Větší nebo rovno — dva znaky',
+        ok:'>= znamená "větší nebo rovno". Takže 18 >= 18 platí — podmínka bude splněna.',
+        no:'Větší nebo rovno se píše >= (šipka a rovnítko). Zkus to.'
+      },
+      {
+        instruction:'Doplň povinnou dvojtečku na konci if:',
+        label:'Cvičení 3',
+        lines:[`teplota = 5`,`if teplota < 0[[BLANK]]`,`    print("Mráz!")`],
+        blank:':',
+        hint:'Jeden interpunkční znak — bez něj Python ohlásí chybu',
+        ok:'Dvojtečka říká Pythonu: "blok kódu, který patří pod if, začíná na dalším řádku".',
+        no:'Na konci if řádku musí být dvojtečka :. Právě tento jeden znak.'
+      }
+    ]
+  },
+  {
+    icon:'↔️', color:'#16a34a',
+    title:'if / else',
+    tagline:'Dvě cesty — if pro jednu možnost, else pro všechny ostatní.',
+    theory:{
+      heading:'Co když podmínka neplatí?',
+      text:'<b>else</b> zachytí situaci, kdy if neplatí. Vždy jde v páru s if. else nemá žádnou podmínku — stačí napsat else a dvojtečku.',
+      lines:[
+        {t:`počasí <span class='kw'>=</span> <span class='str'>"déšť"</span>`},
+        {t:`<span class='kw'>if</span> počasí <span class='kw'>==</span> <span class='str'>"slunce"</span>:`},
+        {t:`    <span class='fn'>print</span>(<span class='str'>"Jdeme ven!"</span>)`},
+        {t:`<span class='kw'>else</span>:`},
+        {t:`    <span class='fn'>print</span>(<span class='str'>"Zůstaneme doma."</span>)`},
+      ],
+      annots:[
+        {k:'else:',v:'zachytí vše ostatní — co nesplnilo podmínku if'},
+        {k:'žádná podmínka',v:'else nemá vlastní podmínku — je to prostě "jinak"'},
+        {k:'stejné odsazení',v:'else začíná na stejném místě jako if — ne uvnitř'},
+      ]
+    },
+    exercises:[
+      {
+        instruction:'Doplň klíčové slovo pro druhou větev:',
+        label:'Cvičení 1',
+        lines:[`skóre = 30`,`if skóre >= 50:`,`    print("Výborně")`,`[[BLANK]]:`,`    print("Zkus příště")`],
+        blank:'else',
+        hint:'Čtyři písmena — druhá větev, bez podmínky',
+        ok:'else zachytí případ, kdy if neplatí. Skóre 30 je méně než 50, takže se vypíše "Zkus příště".',
+        no:'Klíčové slovo je else. Pak dvojtečka — bez jakékoliv podmínky.'
+      },
+      {
+        instruction:'Doplň do else větve text <strong>Vítej ve škole!</strong>:',
+        label:'Cvičení 2',
+        lines:[`věk = 8`,`if věk < 6:`,`    print("Ještě nepůjdeš do školy")`,`else:`,`    print([[BLANK]])`],
+        blank:'"Vítej ve škole!"',
+        hint:'Text v uvozovkách — pozdrav pro starší než 5 let',
+        ok:'Text v uvozovkách jako argument print(). Věk 8 nesplňuje věk < 6, takže Python jde do else.',
+        no:'Do print() patří text v uvozovkách: "Vítej ve škole!". Včetně uvozovek.'
+      }
+    ]
+  },
+  {
+    icon:'🔄', color:'#7c3aed',
+    title:'for smyčka',
+    tagline:'Opakování kódu — for projde každé číslo nebo prvek.',
+    theory:{
+      heading:'Jak zopakovat kód?',
+      text:'<b>for i in range(n):</b> projde čísla od 0 do n-1. Proměnná i dostane vždy aktuální hodnotu. Kód uvnitř se odsadí.',
+      lines:[
+        {t:`<span class='cm'># Příklad 1 — range(4) projde 0, 1, 2, 3</span>`},
+        {t:`<span class='kw'>for</span> i <span class='kw'>in</span> <span class='fn'>range</span>(<span class='num'>4</span>):`},
+        {t:`    <span class='fn'>print</span>(i)  <span class='cm'># Vypíše: 0, 1, 2, 3</span>`},
+        {t:``},
+        {t:`<span class='cm'># Příklad 2 — range(1, 6) projde 1, 2, 3, 4, 5</span>`},
+        {t:`<span class='kw'>for</span> i <span class='kw'>in</span> <span class='fn'>range</span>(<span class='num'>1</span>, <span class='num'>6</span>):`},
+        {t:`    <span class='fn'>print</span>(i)  <span class='cm'># Vypíše: 1, 2, 3, 4, 5</span>`},
+      ],
+      annots:[
+        {k:'for',v:'klíčové slovo smyčky'},
+        {k:'i',v:'proměnná — dostane vždy aktuální číslo (název si volíme)'},
+        {k:'range(4)',v:'vygeneruje 0, 1, 2, 3 — celkem 4 čísla, začíná od nuly'},
+        {k:'range(1, 6)',v:'od 1 do 5 — druhé číslo je výhradní (nepočítá se)'},
+      ]
+    },
+    exercises:[
+      {
+        instruction:'Doplň klíčové slovo pro smyčku:',
+        label:'Cvičení 1',
+        lines:[`[[BLANK]] i in range(5):`,`    print(i)`],
+        blank:'for',
+        hint:'Tři písmena — zahajuje smyčku',
+        ok:'for zahajuje smyčku. i dostane postupně hodnoty 0, 1, 2, 3, 4.',
+        no:'Klíčové slovo je for — tři písmena. Zkus to.'
+      },
+      {
+        instruction:'Doplň range pro opakování 3krát:',
+        label:'Cvičení 2',
+        lines:[`for i in [[BLANK]]:`,`    print("Ahoj!")`],
+        blank:'range(3)',
+        hint:'range s číslem 3 — projde 0, 1, 2',
+        ok:'range(3) vygeneruje 0, 1, 2. Smyčka proběhne třikrát — "Ahoj!" se vypíše třikrát.',
+        no:'Napíšeme range(3) — závorky jsou součástí příkazu. Zkus to celé.'
+      },
+      {
+        instruction:'Doplň obsah smyčky — vypiš aktuální číslo:',
+        label:'Cvičení 3',
+        lines:[`for číslo in range(5):`,`    print([[BLANK]])`],
+        blank:'číslo',
+        hint:'Název proměnné ze smyčky — bez uvozovek',
+        ok:'číslo je proměnná — bez uvozovek. S uvozovkami by se vypisovalo doslova slovo "číslo".',
+        no:'Proměnná číslo se píše bez uvozovek. Uvozovky by z ní udělaly text. Zkus znovu.'
+      }
+    ]
+  },
+  {
+    icon:'⚙️', color:'#0f766e',
+    title:'def — funkce',
+    tagline:'Vlastní příkaz s názvem, který můžeme volat znovu a znovu.',
+    theory:{
+      heading:'Jak vytvořit vlastní funkci?',
+      text:'<b>def</b> definuje funkci — blok kódu s názvem. Definicí se funkce nespustí — spustí se až když ji zavoláme jménem a závorkami.',
+      lines:[
+        {t:`<span class='kw'>def</span> <span class='fn'>pozdrav</span>():`},
+        {t:`    <span class='fn'>print</span>(<span class='str'>"Ahoj!"</span>)`},
+        {t:`    <span class='fn'>print</span>(<span class='str'>"Jak se máš?"</span>)`},
+        {t:``},
+        {t:`<span class='fn'>pozdrav</span>()  <span class='cm'># zavolání funkce</span>`},
+        {t:`<span class='fn'>pozdrav</span>()  <span class='cm'># zavolání znovu</span>`},
+      ],
+      annots:[
+        {k:'def',v:'klíčové slovo — zkratka od define (definovat)'},
+        {k:'pozdrav',v:'název funkce — volíme si sami, bez mezer'},
+        {k:'()',v:'závorky — povinné, i když funkce nemá parametry'},
+        {k:':',v:'dvojtečka na konci — stejně jako u if'},
+        {k:'pozdrav()',v:'volání funkce — spustí vše, co je uvnitř definice'},
+      ]
+    },
+    exercises:[
+      {
+        instruction:'Doplň klíčové slovo pro definici funkce:',
+        label:'Cvičení 1',
+        lines:[`[[BLANK]] zobraz():`,`    print("Vítej!")`],
+        blank:'def',
+        hint:'Tři písmena — zkratka od define',
+        ok:'def definuje funkci. Python si zapamatuje celý blok, ale ještě ho nespustí.',
+        no:'Klíčové slovo je def. Přesně tato tři písmena.'
+      },
+      {
+        instruction:'Doplň povinné závorky za názvem funkce:',
+        label:'Cvičení 2',
+        lines:[`def zpráva[[BLANK]]:`,`    print("Dobrý den!")`],
+        blank:'()',
+        hint:'Dvě závorky — otevírací a zavírací',
+        ok:'Závorky jsou součástí funkce — i prázdné. Bez nich Python ohlásí chybu.',
+        no:'Za název funkce patří závorky (). Obě — otevírací i zavírací.'
+      },
+      {
+        instruction:'Doplň volání funkce (spuštění):',
+        label:'Cvičení 3',
+        lines:[`def pozdrav():`,`    print("Ahoj!")`,``,`[[BLANK]]  # spustí funkci`],
+        blank:'pozdrav()',
+        hint:'Jméno funkce + závorky — přesně takto ji spustíme',
+        ok:'pozdrav() spustí funkci. Závorky jsou povinné i při volání. Bez nich by Python jen přečetl jméno, ale nic nespustil.',
+        no:'Volání = jméno funkce + závorky: pozdrav(). Závorky nesmí chybět.'
+      }
+    ]
+  },
+  {
+    icon:'↩️', color:'#9333ea',
+    title:'Parametry & return',
+    tagline:'Funkce, která přijme vstup a vrátí výsledek.',
+    theory:{
+      heading:'Funkce s parametry a návratem',
+      text:'Parametr je proměnná v závorce — dostane hodnotu při volání. <b>return</b> vrátí výsledek volajícímu — pak s ním lze dál pracovat. print jen zobrazí, return předá hodnotu.',
+      lines:[
+        {t:`<span class='kw'>def</span> <span class='fn'>součet</span>(a, b):`},
+        {t:`    <span class='kw'>return</span> a <span class='kw'>+</span> b`},
+        {t:``},
+        {t:`výsledek <span class='kw'>=</span> <span class='fn'>součet</span>(<span class='num'>3</span>, <span class='num'>5</span>)`},
+        {t:`<span class='fn'>print</span>(výsledek)  <span class='cm'># Vypíše: 8</span>`},
+      ],
+      annots:[
+        {k:'a, b',v:'parametry — proměnné, které funkce přijme při volání'},
+        {k:'return',v:'vrátí hodnotu — funkce skončí a předá výsledek'},
+        {k:'součet(3, 5)',v:'volání s argumenty — a dostane 3, b dostane 5'},
+        {k:'výsledek = součet(...)',v:'vrácená hodnota se uloží do proměnné'},
+      ]
+    },
+    exercises:[
+      {
+        instruction:'Doplň parametr funkce:',
+        label:'Cvičení 1',
+        lines:[`def pozdrav([[BLANK]]):`,`    print("Ahoj, " + jméno)`],
+        blank:'jméno',
+        hint:'Název parametru — bez uvozovek, stejné jméno jako uvnitř funkce',
+        ok:'Parametr jméno dostane hodnotu při volání. Například pozdrav("Eva") — pak jméno = "Eva".',
+        no:'Parametr se píše bez uvozovek — je to proměnná. Podívej se, co se používá uvnitř funkce.'
+      },
+      {
+        instruction:'Doplň příkaz pro vrácení výsledku:',
+        label:'Cvičení 2',
+        lines:[`def dvojnásobek(číslo):`,`    [[BLANK]] číslo * 2`],
+        blank:'return',
+        hint:'Šest písmen — vrátí výsledek z funkce',
+        ok:'return vrátí výsledek. Pak lze psát: výsledek = dvojnásobek(5) a výsledek bude 10.',
+        no:'Klíčové slovo je return. Vrátí hodnotu a funkce skončí.'
+      },
+      {
+        instruction:'Doplň volání funkce s argumentem:',
+        label:'Cvičení 3',
+        lines:[`def čtverec(n):`,`    return n * n`,``,`výsledek = [[BLANK]]`,`print(výsledek)  # 25`],
+        blank:'čtverec(5)',
+        hint:'Zavolej funkci čtverec a předej jí číslo 5',
+        ok:'čtverec(5) zavolá funkci — n dostane hodnotu 5 — funkce vrátí 25. Skvělé!',
+        no:'Voláme funkci: jméno(argument). Takže čtverec(5). Závorky s hodnotou jsou nutné.'
+      }
+    ]
+  }
+];
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let phase = 'title'; // title|intro|theory|exercise|ch-done|win
+let ci = 0;       // chapter index
+let ei = 0;       // exercise index
+let attempts = 0; // attempts on current exercise
+let xp = 0;
+let chXP = []; // xp per chapter
+let timerSec = 0; let timerInt = null;
+let chCorrect = 0; // correct in current chapter
+let totalCorrect = 0;
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────
+function totalExercises(){return CHAPTERS.reduce((s,c)=>s+c.exercises.length,0)}
+function doneExercises(){
+  let n=0;
+  for(let i=0;i<ci;i++) n+=CHAPTERS[i].exercises.length;
+  if(phase==='exercise'||phase==='ch-done'||phase==='win') n+=ei;
+  return n;
+}
+
+function updateHeader(){
+  const tot = totalExercises();
+  const done = doneExercises();
+  const pct = Math.round(done/tot*100);
+  document.getElementById('progFill').style.width = pct+'%';
+  document.getElementById('progLabel').textContent =
+    phase==='title'? '—' : CHAPTERS[ci]? CHAPTERS[ci].title : 'Hotovo!';
+  document.getElementById('progPct').textContent = pct+'%';
+  document.getElementById('xpVal').textContent = xp;
+
+  // pips
+  const pip = document.getElementById('pips');
+  pip.innerHTML = CHAPTERS.map((_,i)=>{
+    let cls='pip';
+    if(i<ci) cls+=' done';
+    else if(i===ci) cls+=' active';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+}
+
+function startTimer(){
+  timerInt = setInterval(()=>{
+    timerSec++;
+    const m=String(Math.floor(timerSec/60)).padStart(2,'0');
+    const s=String(timerSec%60).padStart(2,'0');
+    document.getElementById('timerEl').textContent=`${m}:${s}`;
+  },1000);
+}
+
+function hl(s){return s;} // syntax already in HTML
+
+function renderMain(html){
+  const el = document.getElementById('main');
+  el.style.animation='none';
+  void el.offsetWidth;
+  el.style.animation='';
+  el.innerHTML = html;
+  updateHeader();
+}
+
+// ─── PHASES ─────────────────────────────────────────────────────────────────
+
+function showTitle(){
+  phase='title';
+  const html = `
+    <div class="title-screen">
+      <div class="title-eyebrow">Interaktivní kurz</div>
+      <div class="title-h">Naučíme se<br><em>Python syntaxi</em><br>od základů.</div>
+      <div class="title-sub">10 kapitol, ${totalExercises()} cvičení. Píšeš přímo do kódu — žádné klikání, opravdové psaní. Každá kapitola vysvětlí koncept a pak ho procvičí.</div>
+      <div class="chapter-list">
+        ${CHAPTERS.map((c,i)=>`<div class="ch-chip" onclick="jumpToChapter(${i})"><span class="ch-icon">${c.icon}</span><span class="ch-name">${c.title}</span></div>`).join('')}
+      </div>
+      <button class="go-btn" onclick="startGame()">Začít od začátku →</button>
+    </div>`;
+  renderMain(html);
+}
+
+function showChapterIntro(){
+  phase='intro';
+  const c = CHAPTERS[ci];
+  const html = `
+    <div class="ch-intro">
+      <div class="ch-num">Kapitola ${ci+1} z ${CHAPTERS.length}</div>
+      <div class="ch-title-row">
+        <span class="ch-icon-big">${c.icon}</span>
+        <div class="ch-title" style="color:${c.color}">${c.title}</div>
+      </div>
+      <div class="ch-tagline">${c.tagline}</div>
+      <button class="start-btn" onclick="showTheory()">Zobrazit příklady →</button>
+    </div>`;
+  renderMain(html);
+}
+
+function showTheory(){
+  phase='theory';
+  const c = CHAPTERS[ci];
+  const t = c.theory;
+  const codeLines = t.lines.map(l=>`<div class="cl">${l.t||'&nbsp;'}</div>`).join('');
+  const annotHtml = t.annots.map(a=>`<div class="annot"><span class="annot-key">${a.k}</span><span class="annot-val">${a.v}</span></div>`).join('');
+  const html = `
+    <div class="theory-card">
+      <div class="theory-eyebrow">Jak to funguje?</div>
+      <div class="theory-heading">${t.heading}</div>
+      <div class="theory-text">${t.text}</div>
+      <div class="code-ex">${codeLines}</div>
+      <div class="annots">${annotHtml}</div>
+      <button class="next-theory-btn" onclick="startExercises()">Procvičit →</button>
+    </div>`;
+  renderMain(html);
+}
+
+function startExercises(){
+  ei = 0; chCorrect = 0;
+  showExercise();
+}
+
+function showExercise(){
+  phase='exercise';
+  attempts=0;
+  const c = CHAPTERS[ci];
+  const ex = c.exercises[ei];
+  const totalEx = c.exercises.length;
+
+  // Build code lines — replace [[BLANK]] with input
+  const codeHtml = ex.lines.map(line=>{
+    if(line.includes('[[BLANK]]')){
+      const parts = line.split('[[BLANK]]');
+      return `<span class="cl">${parts[0]}<input class="blank" id="blankInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="?" />${parts[1]||''}</span>`;
+    }
+    return `<span class="cl">${line||'&nbsp;'}</span>`;
+  }).join('');
+
+  const html = `
+    <div class="ex-rule"></div>
+    <div class="ex-label">
+      <span>${ex.label}</span>
+      <span>${ei+1} / ${totalEx}</span>
+    </div>
+    <div class="ex-instruction">${ex.instruction}</div>
+    <div class="fill-block" id="fillBlock">${codeHtml}</div>
+    <div class="submit-row">
+      <button class="check-btn" id="checkBtn" onclick="checkAnswer()">Zkontrolovat</button>
+      <button class="hint-btn" id="hintBtn" onclick="showHint()">Nápověda</button>
+      <span class="attempts-txt" id="attTxt"></span>
+    </div>
+    <div class="fb" id="fb"></div>
+    <button class="next-ex-btn" id="nextBtn" onclick="advanceExercise()">
+      ${ei < totalEx-1 ? 'Další cvičení →' : 'Dokončit kapitolu →'}
+    </button>`;
+
+  renderMain(html);
+
+  const inp = document.getElementById('blankInput');
+  if(inp){
+    inp.focus();
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter') checkAnswer(); });
+    inp.addEventListener('input', ()=>{
+      inp.style.width = Math.max(48, inp.value.length * 9.5 + 20) + 'px';
+    });
+    inp.style.width = '72px';
+  }
+}
+
+function checkAnswer(){
+  const inp = document.getElementById('blankInput');
+  if(!inp) return;
+  const val = inp.value.trim();
+  if(!val) return;
+
+  const ex = CHAPTERS[ci].exercises[ei];
+  const correct = ex.blank.trim();
+
+  const isOk = val === correct;
+  attempts++;
+
+  const fb = document.getElementById('fb');
+  const block = document.getElementById('fillBlock');
+  const nextBtn = document.getElementById('nextBtn');
+  const checkBtn = document.getElementById('checkBtn');
+  const attTxt = document.getElementById('attTxt');
+
+  if(isOk){
+    inp.classList.add('ok');
+    inp.disabled = true;
+    block.classList.add('correct');
+    checkBtn.disabled = true;
+    document.getElementById('hintBtn').disabled = true;
+    xp += attempts === 1 ? 10 : 5;
+    chCorrect++;
+    totalCorrect++;
+    fb.className='fb show ok';
+    fb.innerHTML=`<span class="fb-icon">✦</span><div class="fb-body"><strong>${ex.ok.split('.')[0]}.</strong>${ex.ok.split('.').slice(1).join('.')}</div>`;
+    nextBtn.classList.add('show');
+    updateHeader();
+  } else {
+    inp.classList.add('err');
+    block.classList.add('wrong');
+    setTimeout(()=>{
+      block.classList.remove('wrong');
+      inp.classList.remove('err');
+    }, 400);
+
+    if(attempts >= 2){
+      // Reveal
+      inp.value = correct;
+      inp.style.width = Math.max(48, correct.length * 9.5 + 20) + 'px';
+      inp.classList.add('ok');
+      inp.disabled = true;
+      block.classList.add('correct');
+      checkBtn.disabled = true;
+      document.getElementById('hintBtn').disabled = true;
+      fb.className='fb show reveal';
+      fb.innerHTML=`<span class="fb-icon">→</span><div class="fb-body"><strong>Správná odpověď: ${escHtml(correct)}</strong>${ex.no}</div>`;
+      nextBtn.classList.add('show');
+    } else {
+      fb.className='fb show look';
+      fb.innerHTML=`<span class="fb-icon">→</span><div class="fb-body"><strong>Zkus znovu.</strong>${ex.no}</div>`;
+      attTxt.textContent = `Pokus ${attempts} / 2`;
+      setTimeout(()=>{ const i = document.getElementById('blankInput'); if(i){ i.value=''; i.style.width='72px'; i.focus(); }},100);
+    }
+  }
+}
+
+function showHint(){
+  const ex = CHAPTERS[ci].exercises[ei];
+  const fb = document.getElementById('fb');
+  fb.className='fb show hint';
+  fb.innerHTML=`<span class="fb-icon">💡</span><div class="fb-body"><strong>Nápověda</strong>${ex.hint}</div>`;
+}
+
+function advanceExercise(){
+  ei++;
+  const c = CHAPTERS[ci];
+  if(ei >= c.exercises.length){
+    showChapterDone();
+  } else {
+    showExercise();
+  }
+}
+
+function showChapterDone(){
+  phase='ch-done';
+  const c = CHAPTERS[ci];
+  const tot = c.exercises.length;
+  const earned = Math.min(chCorrect, tot);
+  chXP.push(earned);
+
+  const msgs = [
+    ['Kapitola zvládnuta.', `Prošel/a jsi všemi ${tot} cvičeními kapitoly ${c.title}.`],
+    ['Docela slušný výkon.', `${earned} z ${tot} správně napoprvé — to je dobrý základ.`],
+    ['Kapitola za tebou.', `Každé cvičení ukázalo, jak ${c.title} funguje v praxi.`],
+  ];
+  const [h, b] = msgs[earned === tot ? 0 : earned >= Math.ceil(tot/2) ? 1 : 2];
+
+  const isLast = ci >= CHAPTERS.length - 1;
+  const html = `
+    <div class="ch-done">
+      <div class="done-icon">${c.icon}</div>
+      <div class="done-title">${h}</div>
+      <div class="done-sub">${b}</div>
+      <div class="done-stats">
+        <div class="done-stat"><div class="done-stat-val">${earned}/${tot}</div><div class="done-stat-lbl">Správně</div></div>
+        <div class="done-stat"><div class="done-stat-val">${xp}</div><div class="done-stat-lbl">Celkem XP</div></div>
+      </div>
+      <button class="continue-btn" onclick="${isLast ? 'showWin()' : 'nextChapter()'}">
+        ${isLast ? 'Zobrazit výsledky →' : 'Další kapitola →'}
+      </button>
+    </div>`;
+  renderMain(html);
+}
+
+function nextChapter(){
+  ci++;
+  chCorrect = 0;
+  showChapterIntro();
+}
+
+function showWin(){
+  phase='win';
+  clearInterval(timerInt);
+  const m=String(Math.floor(timerSec/60)).padStart(2,'0');
+  const s=String(timerSec%60).padStart(2,'0');
+  const tot = totalExercises();
+  const pct = Math.round(totalCorrect/tot*100);
+  const msgs = [
+    ['Výborná práce.', `Prošel/a jsi všemi kapitolami a procvičil/a si základy Python syntaxe. Teď víš, jak print, proměnné, podmínky, smyčky i funkce vypadají v praxi.`],
+    ['Dobrý pokrok.', `${totalCorrect} z ${tot} cvičení správně — základ Python syntaxe máš. Pár věcí se ještě sedá na místo, ale to je přesně k čemu procvičování slouží.`],
+    ['Začátek je za tebou.', `${totalCorrect} z ${tot} správně. Každá chyba ukázala, co ještě posílit. Kurz lze spustit znovu a projít ještě jednou.`],
+  ];
+  const [h,b] = msgs[pct>=90?0:pct>=60?1:2];
+
+  const html = `
+    <div class="win">
+      <div class="win-label">Kurz dokončen</div>
+      <div class="win-title">${h}</div>
+      <div class="win-sub">${b}</div>
+      <div class="win-grid">
+        <div class="win-stat"><div class="win-stat-val">${totalCorrect}/${tot}</div><div class="win-stat-lbl">Správných odpovědí</div></div>
+        <div class="win-stat"><div class="win-stat-val">${pct} %</div><div class="win-stat-lbl">Úspěšnost</div></div>
+        <div class="win-stat"><div class="win-stat-val">${xp}</div><div class="win-stat-lbl">Získané XP</div></div>
+        <div class="win-stat"><div class="win-stat-val">${m}:${s}</div><div class="win-stat-lbl">Celkový čas</div></div>
+      </div>
+      <button class="restart-link" onclick="restartGame()">↺ Spustit znovu od začátku</button>
+    </div>`;
+  renderMain(html);
+  updateHeader();
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ─── FLOW ────────────────────────────────────────────────────────────────────
+function startGame(){
+  ci=0; ei=0; xp=0; timerSec=0; chCorrect=0; totalCorrect=0; chXP=[];
+  clearInterval(timerInt);
+  startTimer();
+  showChapterIntro();
+}
+
+
+function jumpToChapter(idx){
+  ci=idx; ei=0; chCorrect=0;
+  if(!timerInt) startTimer();
+  showChapterIntro();
+}
+function restartGame(){
+  ci=0; ei=0; xp=0; timerSec=0; chCorrect=0; totalCorrect=0; chXP=[];
+  clearInterval(timerInt);
+  document.getElementById('timerEl').textContent='00:00';
+  showTitle();
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+document.getElementById('pips').innerHTML = CHAPTERS.map(()=>`<div class="pip"></div>`).join('');
+showTitle();
+</script>
+</body>
+</html>
